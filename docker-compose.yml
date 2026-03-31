@@ -1,0 +1,39 @@
+services:
+  mcp-server:
+    build: .
+    restart: unless-stopped
+    # Run as root to match vault ownership from Syncthing on the host.
+    user: "0:0"
+    ports:
+      - "8002:8002"
+    environment:
+      - OBSIDIAN_VAULT_PATH=/app/vault
+      - MCP_HOST=0.0.0.0
+      - MCP_PORT=8002
+      - MCP_TRANSPORT=sse
+      - LOG_LEVEL=INFO
+    volumes:
+      - /root/obsidian-vault:/app/vault:rw
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8002/health', timeout=3)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    deploy:
+      resources:
+        limits:
+          memory: 256m
+          cpus: "0.5"
+
+  cloudflared:
+    image: cloudflare/cloudflared:2025.2.1
+    restart: unless-stopped
+    command: tunnel --no-autoupdate --protocol http2 run
+    environment:
+      TUNNEL_TOKEN: ${OBSIDIAN_TUNNEL_TOKEN}
+    deploy:
+      resources:
+        limits:
+          memory: 128m
+          cpus: "0.5"
