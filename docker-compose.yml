@@ -1,9 +1,13 @@
 services:
   mcp-server:
-    build: .
+    build:
+      context: .
+      args:
+        # Match the vault owner UID/GID on the host (Syncthing runs as root on CT 104).
+        # Override here rather than running the container as root.
+        APP_UID: ${APP_UID:-0}
+        APP_GID: ${APP_GID:-0}
     restart: unless-stopped
-    # Run as root to match vault ownership from Syncthing on the host.
-    user: "0:0"
     ports:
       - "8002:8002"
     environment:
