@@ -8,3 +8,4 @@ build/
 *.db
 .DS_Store
 uv.lock
+.mcp.json

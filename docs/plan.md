@@ -11,7 +11,7 @@ Built with FastMCP. Core modules (`vault.py`, `frontmatter.py`) have zero MCP de
 ## Current state
 
 Server runs locally via launchd (`com.topi.obsidian-vault-mcp`), SSE on port 8002.
-Vault: `~/Library/Mobile Documents/iCloud~md~obsidian/Documents/obsidian-notes` (1,380 files).
+Vault: `~/Library/Mobile Documents/iCloud~md~obsidian/Documents/obsidian-notes` (~1,930 files).
 
 9 tools: `vault_list`, `vault_read`, `vault_write`, `vault_search`, `vault_search_by_tag`, `vault_recent`, `vault_move`, `vault_structure`, `vault_backlinks`.
 
@@ -34,11 +34,18 @@ Vault: `~/Library/Mobile Documents/iCloud~md~obsidian/Documents/obsidian-notes` 
 
 - [x] CLAUDE.md at vault root — already exists, comprehensive and accurate
 - [x] Slash commands (`/context`, `/synthesize`, `/graduate`, `/drift`) — all reference obsidian MCP ops, will resolve at runtime
-- [ ] Vault cleanup — Claude-assisted review and reorganization (next session, with obsidian MCP connected)
+- [x] Vault cleanup — Phase A structural fixes + Phase B content mapping (2026-04-02)
+  - Fixed folder numbering: 20-PROJECTS→30-PROJECTS, 30-SYNTHESIS→20-SYNTHESIS
+  - Consolidated duplicate Readwise folders (Notes/Readwise→40-REFERENCE/Readwise, deleted 552 stale files)
+  - Removed Trash/, empty folders, 8 junk/empty files
+  - Moved 3 inbox items to 40-REFERENCE, OpenKitchen AI to 30-PROJECTS
+  - Updated vault CLAUDE.md
+  - MCP server connection: requires `type: "sse"` in config + `.mcp.json` at project root
+- [ ] Vault cleanup Phase B2 — restructure subfolders within main-level folders (40-REFERENCE legacy, 10-NOTES organization)
 
 ## Architecture notes
 
-- No database — 1,380 files scans in <1s, avoids index/filesystem sync issues
+- No database — ~1,930 files scans in <1s, avoids index/filesystem sync issues
 - Atomic writes (temp file + `os.replace()`) — safe for Syncthing
 - Excluded dirs: `.obsidian/`, `.git/`, `.smart-env/`, `Trash/`, `assets/`, `node_modules/`
 - iCloud vault path — macOS rarely evicts files this small (167MB)
